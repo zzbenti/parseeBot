@@ -45,7 +45,7 @@ dependencies {
 
 ### 3.设置bot号
 
-![](/Users/ycp/Desktop/parseeDoc/1.png)
+![](1.png)
 
 `Bot(qq:Long;password:String)`
 
@@ -114,7 +114,7 @@ shadowJar{
 
 #### 5. 按照图片步骤build
 
-![](/Users/ycp/Desktop/parseeDoc/2.png)
+![](2.png)
 
 在build/libs/中找到生成的jar包
 
@@ -126,7 +126,7 @@ shadowJar{
 
 ### 1.下载[帕露西bot仓库](https://github.com/su1kaycp/parseebot)release中的jar包
 
-![](/Users/ycp/Desktop/parseeDoc/3.png)
+![](3.png)
 
 ### 2.执行
 
