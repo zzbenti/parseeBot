@@ -70,10 +70,17 @@ fun drawHorse(map: Map<String,Int>,turn:Int):String{
     }
     return sb.toString()
 }
+suspend fun airing(bot:Bot,info:String){
+    bot.groups.forEach {
+        try {
+            bot.getGroup(it.id).sendMessage(info)
+        }catch (e:Exception){}
+    }
+}
 suspend fun main() {
     val bot = Bot(
-            123123L,
-            "password"
+            123123123L,
+            "123123123"
     ) {
         fileBasedDeviceInfo("device.json") // 使用 "device.json" 保存设备信息
     }.alsoLogin()
@@ -82,12 +89,12 @@ suspend fun main() {
     val history = mutableMapOf<String, String>()
     val choice = mutableMapOf<String, Boolean>()
     var tip = true
-    var sleepSpeak = mutableMapOf<Long, Int>();
-    var blockList = mutableListOf<Long>();
+    val sleepSpeak = mutableMapOf<Long, Int>();
+    val blockList = mutableListOf<Long>();
     var lastMessage: String = ""
     var lastLastMessage: String = ""
     val pics = "https://konachan.net/sample/e7c977cfce53e656acbae6ff78e2ab11/Konachan.com%20-%20300757%20sample.jpg,https://konachan.net/image/6318d55300cb4bbd9cb1d2bbb7be1d40/Konachan.com%20-%20300716%20fire%20fujiwara_no_mokou%20mage%20magic%20maru-pen%20touhou%20zoom_layer.jpg,https://konachan.net/sample/27c6554ec9f7cda1778f2fafeff02d82/Konachan.com%20-%20300681%20sample.jpg,https://konachan.net/jpeg/6fa448210d5405b054e5d28e93aaadc4/Konachan.com%20-%20300607%202girls%20blue_hair%20bow%20candy%20chocolate%20dress%20eichi_yuu%20food%20hat%20long_hair%20purple_eyes%20red_eyes%20short_hair%20shoujo_ai%20touhou%20valentine%20vampire%20wristwear.jpg,https://konachan.net/sample/d040e0423b7912b008649e79262fb3e2/Konachan.com%20-%20300589%20sample.jpg,https://konachan.net/sample/47246b44e3e71d8552e7436576c10266/Konachan.com%20-%20300498%20sample.jpg,https://konachan.net/sample/93eb550c0622355d13786afd9103b015/Konachan.com%20-%20300445%20sample.jpg,https://konachan.net/image/fb0204ce0f0f47ad2ad9da82a8a9d44d/Konachan.com%20-%20300441%20ass%20green_eyes%20green_hair%20komeiji_koishi%20maiwetea%20school_swimsuit%20short_hair%20swimsuit%20touhou%20underwater%20water.jpg,https://konachan.net/jpeg/9f9bed8b36c8fcc121c64176edaf5704/Konachan.com%20-%20300428%20bow%20cape%20nnyara%20red_eyes%20red_hair%20sekibanki%20short_hair%20skirt%20touhou%20watermark%20white.jpg,https://konachan.net/sample/d29f36f9fcf4d5c3c148a4e69b19193d/Konachan.com%20-%20300427%20sample.jpg,https://konachan.net/image/44698a09bc14c227548761af0351a413/Konachan.com%20-%20300311%20blonde_hair%20blush%20breasts%20cleavage%20close%20hat%20long_hair%20red_eyes%20roh_nam_kyung%20touhou%20yakumo_yukari.jpg,https://konachan.net/sample/e7c977cfce53e656acbae6ff78e2ab11/Konachan.com%20-%20300757%20sample.jpg,https://konachan.net/image/6318d55300cb4bbd9cb1d2bbb7be1d40/Konachan.com%20-%20300716%20fire%20fujiwara_no_mokou%20mage%20magic%20maru-pen%20touhou%20zoom_layer.jpg,https://konachan.net/sample/27c6554ec9f7cda1778f2fafeff02d82/Konachan.com%20-%20300681%20sample.jpg,https://konachan.net/jpeg/6fa448210d5405b054e5d28e93aaadc4/Konachan.com%20-%20300607%202girls%20blue_hair%20bow%20candy%20chocolate%20dress%20eichi_yuu%20food%20hat%20long_hair%20purple_eyes%20red_eyes%20short_hair%20shoujo_ai%20touhou%20valentine%20vampire%20wristwear.jpg,https://konachan.net/sample/d040e0423b7912b008649e79262fb3e2/Konachan.com%20-%20300589%20sample.jpg,https://konachan.net/sample/47246b44e3e71d8552e7436576c10266/Konachan.com%20-%20300498%20sample.jpg,https://konachan.net/sample/e7c977cfce53e656acbae6ff78e2ab11/Konachan.com%20-%20300757%20sample.jpg,https://konachan.net/image/6318d55300cb4bbd9cb1d2bbb7be1d40/Konachan.com%20-%20300716%20fire%20fujiwara_no_mokou%20mage%20magic%20maru-pen%20touhou%20zoom_layer.jpg,https://konachan.net/sample/27c6554ec9f7cda1778f2fafeff02d82/Konachan.com%20-%20300681%20sample.jpg,https://konachan.net/jpeg/6fa448210d5405b054e5d28e93aaadc4/Konachan.com%20-%20300607%202girls%20blue_hair%20bow%20candy%20chocolate%20dress%20eichi_yuu%20food%20hat%20long_hair%20purple_eyes%20red_eyes%20short_hair%20shoujo_ai%20touhou%20valentine%20vampire%20wristwear.jpg,".split(",")
-    var hsoCd: Long = System.currentTimeMillis() / 1000.toInt()
+    var hsoCd: Long = System.currentTimeMillis() / 1000
     val nickId = mutableMapOf<String, Long>()
     var inHorseGame=false
     var turn=0
@@ -107,11 +114,24 @@ suspend fun main() {
                 }
                 reply("暗改成功\n`${lst[0]}`\n的算卦结果是\n`${lst[1]}`")
             } else {
-                reply("你暗改你马呢")
+                reply("无权限")
+            }
+        }
+        startsWith(".广播",removePrefix = true){
+            if(sender.id==1791355024L) {
+                val info = it
+                airing(bot,info)
+                reply("广播成功")
+            }else{
+                reply("无权限")
             }
         }
     }
     bot.subscribeGroupMessages {
+        case(".骰子"){
+            val dice= listOf<Int>(1,2,3,4,5,6)
+            reply(At(sender as Member)+"\n结果:${dice.shuffled().take(1)}")
+        }
         startsWith(".龙王", removePrefix = true) {
             try {
                 var time = it.toInt()
@@ -125,7 +145,7 @@ suspend fun main() {
             }
         }
         case(".hso") {
-            var nowTime = System.currentTimeMillis() / 1000.toInt()
+            val nowTime = System.currentTimeMillis() / 1000.toInt()
             if (nowTime - hsoCd > 10) {
                 hsoCd = nowTime
                 val picUrl = pics.shuffled().take(1)[0]
@@ -149,6 +169,7 @@ suspend fun main() {
                     "睡觉->开启睡觉计时\n" +
                     "起床->关闭睡觉计时\n‍" +
                     "睡觉榜->查看谁正在睡觉\n" +
+                    "🆕屏蔽榜->查看谁正在被屏蔽" +
                     "\n2.赛马\n" +
                     ".赛道长 <正整数>->修改赛道长\n" +
                     ".赛马 <a;b...;n>->准备赛马\n" +
@@ -162,7 +183,10 @@ suspend fun main() {
                     "睡觉不超过30分钟会被禁言10分钟\n" +
                     "睡觉后水群超过9条消息后会被帕露西屏蔽\n" +
                     "睡觉超过13小时会被帕露西屏蔽\n" +
-                    "\n作者:Su1kaYCP")
+                    "🆕睡觉少于90秒会被帕露西屏蔽\n" +
+                    "\n作者:Su1kaYCP\n" +
+                    "QQ:1791355024\n" +
+                    "帕露源码:https://github.com/Su1kaYCP/parseeBot")
         }
         startsWith(".提醒", removePrefix = true) {
             if (it == "开启") {
@@ -177,12 +201,12 @@ suspend fun main() {
         }
         startsWith(".猜拳", removePrefix = true) {
             if (it != "石头" && it != "剪刀" && it != "布") {
-                reply("玩`石头剪刀布`你不出这三个你玩你马呢?")
+                reply("请输入`石头/剪刀/布`中其一")
             }
             val pChoice = getPSS()
-            if (pChoice == it) reply(At(sender as Member) + "\n你猜的:${it}\n帕露的:${pChoice}\n结果:平局")
-            else if ((pChoice == "剪刀" && it == "布") || (pChoice == "布" && it == "石头") || (pChoice == "石头" && it == "剪刀")) reply(At(sender as Member) + "\n你猜的:${it}\n帕露的:${pChoice}\n结果:帕露帕露赢了")
-            else if ((pChoice == "布" && it == "剪刀") || (pChoice == "石头" && it == "布") || (pChoice == "剪刀" && it == "石头")) reply(At(sender as Member) + "\n你猜的:${it}\n帕露的:${pChoice}\n结果:帕露帕露输了")
+            if (pChoice == it) reply(At(sender as Member) + "\n您猜的:${it}\n帕露的:${pChoice}\n结果:平局")
+            else if ((pChoice == "剪刀" && it == "布") || (pChoice == "布" && it == "石头") || (pChoice == "石头" && it == "剪刀")) reply(At(sender as Member) + "\n您猜的:${it}\n帕露的:${pChoice}\n结果:帕露帕露赢了")
+            else if ((pChoice == "布" && it == "剪刀") || (pChoice == "石头" && it == "布") || (pChoice == "剪刀" && it == "石头")) reply(At(sender as Member) + "\n您猜的:${it}\n帕露的:${pChoice}\n结果:帕露帕露输了")
         }
         startsWith(".抽取", removePrefix = true) {
             val rollLst = it.split(";")
@@ -220,11 +244,11 @@ suspend fun main() {
             reply(it)
         }
         (contains("我爱你") or contains("爱你") or contains("爱爱")) {
-            reply("不要男妈妈要紫妈妈${getErrorCode()}")
+            reply("不要男妈妈不要男妈妈")
         }
         startsWith(".算卦 ", removePrefix = true) {
             if (sender.id in blockList) {
-                reply("宁被帕露屏蔽辣")
+                reply("您已被屏蔽")
             } else {
                 if (it in history.keys) {
                     reply(At(sender as Member) + "\n事件:${it}\n结果:${history.get(it)}")
@@ -237,7 +261,7 @@ suspend fun main() {
         }
         startsWith(".抉择 ", removePrefix = true) {
             if (sender.id in blockList) {
-                reply("宁被帕露屏蔽辣")
+                reply("您已被屏蔽")
             } else {
                 if (it in choice.keys) {
                     if (choice.get(it)!!) reply(At(sender as Member) + "\n事件:${it}\n抉择:Yes")
@@ -260,18 +284,18 @@ suspend fun main() {
         }
         contains("机器人") {
             reply("帕露帕露才不是机器人")
-            sendImage(URL("http://175.24.40.13/thPics/19.png"))
+//            sendImage(URL("http://175.24.40.13/thPics/19.png"))
         }
-        case("运势") {
-            reply(At(sender as Member) + "\n你今天的运势是我爱你")
-        }
+//        case("运势") {
+//            reply(At(sender as Member) + "\n你今天的运势是我爱你")
+//        }
         case("睡觉") {
             nickId.put(senderName, sender.id)
             if (sender.id in blockList) {
-                reply(At(sender as Member) + "\n宁被帕露屏蔽辣不能睡觉辣")
+                reply(At(sender as Member) + "\n您已经被屏蔽,无法执行本操作")
             } else {
                 if (senderName in sleep) {
-                    reply(At(sender as Member) + "\n你还没起床呢~先对帕露西说\"起床\"吧~")
+                    reply(At(sender as Member) + "\n您还没起床呢~先对帕露西说\"起床\"吧~")
                 } else {
                     reply(At(sender as Member) + "\n帕露晚安~")
                     sleep[senderName] = System.currentTimeMillis() / 1000
@@ -286,11 +310,16 @@ suspend fun main() {
                 if (sleepTime != null) {
                     val sleepFor = (nowTime - sleepTime).toInt()
                     val t = getTime(sleepFor)
-                    reply(At(sender as Member) + "\n帕露早安~\n你睡了${t[0]}小时${t[1]}分钟${t[2]}秒~")
+                    reply(At(sender as Member) + "\n帕露早安~\n您睡了${t[0]}小时${t[1]}分钟${t[2]}秒~")
+                    sleepSpeak.remove(sender.id)
                     if (t[0] >= 6) {
                         reply("真是美好的一觉啊帕露帕露")
                     } else if (t[0] == 0 && t[1] <= 30) {
-                        reply("刚睡觉就起床你睡你马呢?")
+                        reply("卜建议刚睡觉就起床")
+                        if((t[1]*60+t[0])<=90){
+                            blockList.add(sender.id)
+                            reply(At(sender as Member)+"\n睡觉不超过90s,帕露自动屏蔽了")
+                        }
                         if (sender.isOperator() == false) {
                             sender.mute(600)
                         }
@@ -298,18 +327,60 @@ suspend fun main() {
                         reply("还要更多睡觉哦帕露帕露")
                     }
                 } else {
-                    reply(At(sender as Member) + "\n你还没睡觉呢~先对帕露西说\"睡觉\"吧~")
+                    reply(At(sender as Member) + "\n您还没睡觉呢~先对帕露西说\"睡觉\"吧~")
                 }
             } else {
-                reply(At(sender as Member) + "\n你还没睡觉呢~先对帕露西说\"睡觉\"吧~")
+                reply(At(sender as Member) + "\n您还没睡觉呢~先对帕露西说\"睡觉\"吧~")
             }
         }
+        startsWith(".唤醒 ",removePrefix = true){
+            if(sender.id==1791355024L) {
+                try {
+                    val name = sleep.keys.toList()[it.toInt()]
+                    sleep.remove(name)
+                    reply("已唤醒${name}")
+                } catch (e: Exception) {
+                    reply("错误")
+                }
+            }else{
+                reply("无权限")
+            }
+        }
+        startsWith(".解除",removePrefix = true){
+            if(sender.id==1791355024L){
+                if(it!="all") {
+                    try {
+                        blockList.removeAt(it.toInt())
+                        reply("解除屏蔽成功")
+                    } catch (e: Exception) {
+                        reply("错误")
+                    }
+                }else{
+                    blockList.forEach {
+                        blockList.remove(it)
+                    }
+                }
+            }else{
+                reply("无权限")
+            }
+        }
+        case("屏蔽榜"){
+            val sb=StringBuilder("屏蔽榜")
+            var time=0
+            blockList.forEach {
+                sb.append("\n[${time}]${it}")
+                time+=1
+            }
+            reply(sb.toString())
+        }
         case("睡觉榜") {
-            val sb = StringBuilder("睡觉榜\n")
+            val sb = StringBuilder("睡觉榜")
             val now = (System.currentTimeMillis() / 1000).toInt()
+            var time_=0
             sleep.forEach {
                 val time = getTime(now - it.value.toInt())
-                sb.append("${it.key}\t${time[0]}时${time[1]}分${time[2]}秒\n")
+                sb.append("\n[${time_}]${it.key}\t${time[0]}时${time[1]}分${time[2]}秒")
+                time_+=1
             }
             reply(sb.toString())
         }
@@ -319,7 +390,7 @@ suspend fun main() {
                 val nowTime = (System.currentTimeMillis() / 1000).toInt()
                 if (sleepTime != null) {
                     if (getTime(nowTime - sleepTime.toInt())[0] >= 13) {
-                        reply("@${it}睡觉时间太长被帕露自动屏蔽了")
+                        airing(bot,"${it}睡觉时间太长被帕露自动屏蔽了")
                         sleep.remove(it)
                         try {
                             val id = nickId.get(it)
@@ -343,20 +414,18 @@ suspend fun main() {
                     if (sleepSpeak[sender.id] == 10) {
                         blockList.add(sender.id)
                         sleep.remove(senderName)
-                        reply(At(sender as Member) + "\n宁睡觉还说话被爷屏蔽辣")
+                        reply(At(sender as Member) + "\n睡觉说话次数过多,被帕露西加入屏蔽了")
                         if (sender.isOperator() == false) {
                             sender.mute(600)
                         }
-                    } else {
-                    }
-                } else {
-                }
+                    } else {}
+                } else {}
             } else {
                 sleepSpeak.put(sender.id, 1)
             }
 
             lastLastMessage = lastMessage
-            if (message.contentToString() != null) lastMessage = message.contentToString()
+            lastMessage = message.contentToString()
             if (lastLastMessage == lastMessage && lastMessage != "[图片]" && lastMessage != ".hso"){
                 reply(lastMessage)
                 lastMessage=""
@@ -422,7 +491,7 @@ suspend fun main() {
                     sb.append("\n赛道长:${distance}")
                     reply(sb.toString())
                 }else{
-                    reply(At(sender as Member)+"一个人赛你马的马")
+                    reply(At(sender as Member)+"赛马要至少2个人哦帕露帕露")
                 }
             }
         }
@@ -466,7 +535,7 @@ suspend fun main() {
         }
     }
     bot.subscribeAlways<MemberJoinEvent> {
-        it.group.sendMessage(PlainText("欢迎${it.member.nameCardOrNick}成为桃子的给粉帕露帕露"))
+        it.group.sendMessage(PlainText("欢迎${it.member.nameCardOrNick}加入本群帕露帕露"))
     }
     bot.join()//等到直到断开连接
 }
