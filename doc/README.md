@@ -4,7 +4,7 @@
 
 ## 一.通过编译源码部署
 
-### 1.下载源码
+### 1.下载源码并使用IDEA打开文件夹
 
 在命令行中输入命令`git clone https://github.com/su1kaycp/parseebot`
 
