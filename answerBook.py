@@ -1,0 +1,7 @@
+import requests
+import re
+headers={'authority':'www.daanshu.com','method':'POST','path':'/','scheme':'https','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9','accept-encoding':'gzip, deflate, br','accept-language':'zh-CN,zh;q=0.9','cache-control':'max-age=0','content-length':'32','content-type':'application/x-www-form-urlencoded','cookie':'UM_distinctid=174164893716e-0b1d0709bbba5c-31647305-13c680-17416489372812; CNZZDATA5904067=cnzz_eid%3D857304220-1598097333-%26ntime%3D1598097333; __gads=ID=70d6a7f7215af527:T=1598101689:S=ALNI_MYaNHtGDR_6GSWhgRwqIPaZdcRcOg','origin':'https://www.daanshu.com','referer':'https://www.daanshu.com/','sec-fetch-dest':'document','sec-fetch-mode':'navigate','sec-fetch-site':'same-origin','sec-fetch-user':'?1','upgrade-insecure-requests':'1','user-agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36',}
+data={"text":"我爱答案之书"}
+rex=re.compile('[\s\S]*?<div class="content">[\s\S]*?<p>(.*?)</p>[\s\S]*?</div>',re.S)
+html=requests.post("https://www.daanshu.com/",headers=headers,data=data)
+print(rex.findall(html.text)[0].strip(),end="")
